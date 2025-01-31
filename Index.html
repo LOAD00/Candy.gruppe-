@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA für Oma</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            touch-action: none;
+        }
+        canvas {
+            background: #87CEEB; /* Himmelblau */
+            display: block;
+        }
+        .joystick {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div class="joystick" id="joystick"></div>
 
+    <script>
+        // Spielfeld
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Spielfigur
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 40,
+            speed: 5,
+            color: "blue"
+        };
+
+        // Bewegung
+        let moveX = 0, moveY = 0;
+
+        // Touch-Steuerung (virtueller Joystick)
+        const joystick = document.getElementById("joystick");
+        let startX, startY;
+
+        joystick.addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+        });
+
+        joystick.addEventListener("touchmove", (e) => {
+            const touch = e.touches[0];
+            let dx = touch.clientX - startX;
+            let dy = touch.clientY - startY;
+            moveX = dx / 20;
+            moveY = dy / 20;
+        });
+
+        joystick.addEventListener("touchend", () => {
+            moveX = 0;
+            moveY = 0;
+        });
+
+        function movePlayer() {
+            player.x += moveX * player.speed;
+            player.y += moveY * player.speed;
+
+            // Spielfigur darf nicht aus dem Bildschirm laufen
+            player.x = Math.max(0, Math.min(canvas.width - player.size, player.x));
+            player.y = Math.max(0, Math.min(canvas.height - player.size, player.y));
+        }
+
+        function drawCity() {
+            ctx.fillStyle = "gray";
+            ctx.fillRect(canvas.width / 4, 0, canvas.width / 2, canvas.height); // Straße
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.size, player.size);
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCity();
+            movePlayer();
+            drawPlayer();
+            requestAnimationFrame(update);
+        }
+
+        update();
+    </script>
+</body>
+</html>
