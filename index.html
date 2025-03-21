@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Shop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .product {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: calc(25% - 20px);
+            padding: 15px;
+            text-align: center;
+        }
+        .product img {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+        }
+        .product-title {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .product-price {
+            font-size: 18px;
+            color: #007b00;
+            margin-bottom: 10px;
+        }
+        .order-btn {
+            background-color: #007b00;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .order-btn:hover {
+            background-color: #005f00;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        #order-form {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        textarea, input {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .submit-btn {
+            background-color: #007b00;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #005f00;
+        }
+    </style>
+</head>
+<body>
 
+    <header>
+        <h1>Mein Online-Shop</h1>
+        <p>Wähle die Produkte aus und sende mir deine Bestellung!</p>
+    </header>
+
+    <div class="container">
+        <div class="products" id="products">
+            <!-- Produkte werden hier per JavaScript eingefügt -->
+        </div>
+
+        <div id="order-form">
+            <h2>Deine Bestellung</h2>
+            <textarea id="order-details" rows="5" placeholder="Deine ausgewählten Produkte erscheinen hier..." readonly></textarea>
+            <input type="text" id="username" placeholder="Dein Name">
+            <input type="text" id="userphone" placeholder="Deine Telefonnummer">
+            <button class="submit-btn" onclick="submitOrder()">Bestellung senden</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Mein Shop - Alle Rechte vorbehalten</p>
+    </footer>
+
+    <script>
+        // Beispielprodukte (Können durch Scraper-Daten von Amazon ersetzt werden)
+        const products = [
+            { id: 1, title: "Produkt 1", price: 29.99, image: "https://via.placeholder.com/150" },
+            { id: 2, title: "Produkt 2", price: 49.99, image: "https://via.placeholder.com/150" },
+            { id: 3, title: "Produkt 3", price: 19.99, image: "https://via.placeholder.com/150" },
+            { id: 4, title: "Produkt 4", price: 99.99, image: "https://via.placeholder.com/150" },
+        ];
+
+        const productContainer = document.getElementById("products");
+        const orderDetails = document.getElementById("order-details");
+
+        // Produkte im Shop anzeigen
+        products.forEach(product => {
+            const productElement = document.createElement("div");
+            productElement.classList.add("product");
+            productElement.innerHTML = `
+                <img src="${product.image}" alt="${product.title}">
+                <div class="product-title">${product.title}</div>
+                <div class="product-price">${(product.price * 1.1).toFixed(2)} €</div>
+                <button class="order-btn" onclick="addToOrder('${product.title}', ${(product.price * 1.1).toFixed(2)})">Zum Warenkorb hinzufügen</button>
+            `;
+            productContainer.appendChild(productElement);
+        });
+
+        // Produkte zur Bestellung hinzufügen
+        function addToOrder(title, price) {
+            orderDetails.value += `${title} - ${price} €\n`;
+        }
+
+        // Bestellung abschicken (z.B. als lokale Speicherung)
+        function submitOrder() {
+            const name = document.getElementById("username").value;
+            const phone = document.getElementById("userphone").value;
+
+            if (!name || !phone) {
+                alert("Bitte fülle alle Felder aus!");
+                return;
+            }
+
+            const order = {
+                name,
+                phone,
+                details: orderDetails.value,
+            };
+
+            // Hier könntest du die Bestellung speichern oder weiterverarbeiten
+            console.log("Bestellung abgeschickt:", order);
+            alert("Vielen Dank für deine Bestellung! Wir melden uns bald.");
+            orderDetails.value = "";
+            document.getElementById("username").value = "";
+            document.getElementById("userphone").value = "";
+        }
+    </script>
+
+</body>
+</html>
